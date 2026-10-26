@@ -1,0 +1,60 @@
+name: E2E Tests
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '0 2 * * *'  # nightly run at 2 AM UTC
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12"]
+        browser: [chromium, firefox, webkit]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          playwright install ${{ matrix.browser }}
+          playwright install-deps ${{ matrix.browser }}
+
+      - name: Run tests
+        run: |
+          pytest tests/ \
+            --browser=${{ matrix.browser }} \
+            --html=reports/report-${{ matrix.browser }}.html \
+            --junitxml=reports/junit-${{ matrix.browser }}.xml \
+            -n 2
+        env:
+          BASE_URL: ${{ secrets.STAGING_URL }}
+
+      - name: Upload HTML Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ matrix.browser }}-${{ matrix.python-version }}
+          path: reports/
+          retention-days: 7
+
+      - name: Upload Videos on Failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: videos-${{ matrix.browser }}
+          path: videos/
+          retention-days: 7
