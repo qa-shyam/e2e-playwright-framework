@@ -1,0 +1,10 @@
+README.md
+pyproject.toml
+e2e_playwright_framework.egg-info/PKG-INFO
+e2e_playwright_framework.egg-info/SOURCES.txt
+e2e_playwright_framework.egg-info/dependency_links.txt
+e2e_playwright_framework.egg-info/requires.txt
+e2e_playwright_framework.egg-info/top_level.txt
+pages/__init__.py
+pages/login_page.py
+tests/test_login.py

@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "e2e-playwright-framework"
+version = "0.1.0"
+description = "Playwright E2E testing framework with pytest"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "pytest>=7.4",
+    "pytest-playwright>=0.5",
+    "playwright>=1.40",
+    "pytest-html>=4.1",
+    "pytest-xdist>=3.3",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["pages*"]
+exclude = ["tests*", "reports*", "videos*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "--headed",
+    "--slowmo=100",
+    "--browser=chromium",
+    "--html=reports/report.html",
+    "--self-contained-html",
+    "-n auto",
+]
+markers = [
+    "smoke: quick smoke tests",
+    "regression: full regression suite",
+]

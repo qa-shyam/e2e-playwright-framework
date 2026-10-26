@@ -28,4 +28,4 @@ def page(context: BrowserContext) -> Page:
 def base_url():
     """Base URL for the application under test."""
     import os
-    return os.getenv("BASE_URL", "https://example.com")
+    return os.getenv("BASE_URL", "https://parabank.parasoft.com/parabank/login.html")
